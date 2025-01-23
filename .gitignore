@@ -1,2 +1,2 @@
-# 忽略 PyCharm 配置文件
 .idea/
+__pycache__/
