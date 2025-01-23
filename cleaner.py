@@ -1,8 +1,7 @@
 import pandas as pd
 import os
 
-
-# 1. 定义数据清洗函数
+# 定义数据清洗函数
 def clean_data(file_path, output_dir):
     item_name = file_path.split('\\')[-1].split('_')[0]  # 从文件路径提取文件名
     print(f"正在处理：{item_name}")
@@ -10,7 +9,7 @@ def clean_data(file_path, output_dir):
     # 加载数据
     df = pd.read_csv(file_path)
 
-    # 1. 检查并转换数据类型
+    # 检查并转换数据类型
     df['好评率'] = df['好评率'].str.replace('%', '')  # 去掉百分号
     df['价格'] = pd.to_numeric(df['价格'], errors='coerce')  # 将价格列转为数值型
     df['评价数'] = pd.to_numeric(df['评价数'], errors='coerce')
@@ -42,29 +41,7 @@ def clean_data(file_path, output_dir):
     # print(df.isnull().sum())
     print(f"数据清洗完成，共有{len(df)}条数据。")
 
-    # 4. 保存清洗后的数据到新的CSV文件
+    # 保存清洗后的数据到新的CSV文件
     output_file = os.path.join(output_dir, f"{item_name}_cleaned_items.csv")
     df.to_csv(output_file, index=False, encoding='utf-8-sig')  # 使用utf-8-sig编码, 解决CSV文件中的BOM问题
     print(f"清洗后的数据已保存至：{output_file}")
-
-
-if __name__ == '__main__':
-    # 2. 遍历data目录下的所有csv文件
-    data_dir = 'data'
-    output_dir = 'cleaned_data'
-
-    # 创建新目录，如果不存在
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    if not os.path.exists(output_dir):
-        os.makedirs(data_dir)
-
-    # 获取data目录下所有csv文件
-    csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
-
-    # 3. 对每个csv文件进行处理
-    for csv_file in csv_files:
-        file_path = os.path.join(data_dir, csv_file)
-        clean_data(file_path, output_dir)
-
-    print("所有文件处理完毕！")

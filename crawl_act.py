@@ -4,16 +4,9 @@ import json
 import csv
 import re
 import os
-# import geocoder
 import hashlib
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
-
-
-# # 获取当前 IP 地址的地理位置
-# g = geocoder.ip('me')
-# gps = ",".join([str(g.latlng[0]), str(g.latlng[1])])
-
 
 # 请求参数和头部
 cookies = {
@@ -112,7 +105,7 @@ def append_unique_data_to_csv(new_items, keyword):
 # 爬取数据
 def crawl_data(keyword, pages):
     items_data = []
-    data['data'] = data['data'].replace('无人机', keyword)
+    original_data = data['data']
 
     # 设置 Edge 浏览器驱动路径
     service = Service('edgedriver_win64/msedgedriver.exe')
@@ -129,7 +122,7 @@ def crawl_data(keyword, pages):
 
     for page in range(1, pages + 1):  # 循环页数，获取每一页的数据
         time.sleep(1)
-        data['data'] = data['data'].replace(str(page - 1), str(page))  # 根据用户输入替换关键词和页数
+        data['data'] = original_data.replace('无人机',keyword).replace('0', str(page), 1)  # 根据用户输入替换关键词和页数
         j = round(time.time() * 1000)
         h = params['appKey']
         key = cookies['_m_h5_tk'].split("_")[0] + "&" + str(j) + "&" + h + "&" + data['data']
@@ -199,15 +192,6 @@ def crawl_data(keyword, pages):
                 '好评率': rate_percent,
             }
             items_data.append(item)
-            # print(title, price, link, seller_area, seller_ID, tags, want_num, img_url, shipping_value, rate_num, rate_percent, sep='\n', end='\n' + '=' * 50 + '\n')
 
     append_unique_data_to_csv(items_data, keyword)
     print(f"数据爬取完成并保存为 {keyword}_items.csv")
-
-
-if __name__ == '__main__':
-    # 用户输入商品名称和页数
-    keyword = input("请输入要爬取的商品名称: ")  # 获取用户输入的商品名称
-    pages = int(input("请输入要爬取的页数: "))  # 获取用户输入的页数
-    # 执行爬取操作
-    crawl_data(keyword, pages)
