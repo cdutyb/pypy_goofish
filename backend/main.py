@@ -1,5 +1,9 @@
+import os
+import sys
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 from routes import goods
 
