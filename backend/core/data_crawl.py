@@ -64,14 +64,11 @@ def md5(key):
     return md5_obj.hexdigest()
 
 
-def append_unique_data_to_csv(new_items, keyword):
-    # 定义 CSV 文件路径
-    csv_file = f'data/{keyword}_items.csv'
-
+def append_unique_data_to_csv(new_items, file_path):
     # 利用商品链接的唯一性，如果文件存在，读取已有数据中的商品链接，避免重复
     existing_links = set()
-    if os.path.exists(csv_file):
-        with open(csv_file, 'r', encoding='utf-8-sig') as file:
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8-sig') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 existing_links.add(row['商品链接'])
@@ -83,10 +80,10 @@ def append_unique_data_to_csv(new_items, keyword):
         print("没有新的商品数据，跳过保存")
         return
     else:
-        print(f"正在保存 {len(new_items_filtered)} 个新的商品数据到 {csv_file}")
+        print(f"正在保存 {len(new_items_filtered)} 个新的商品数据")
 
     # 以追加模式打开文件并写入新数据
-    with open(csv_file, 'a', newline='', encoding='utf-8-sig') as file:
+    with open(file_path, 'a', newline='', encoding='utf-8-sig') as file:
         fieldnames = ['商品名称', '价格', '商品链接', '卖家地址', '卖家ID', '商品标签', '想要人数', '图片链接',
                       '是否包邮', '评价数', '好评率']
         writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -99,11 +96,9 @@ def append_unique_data_to_csv(new_items, keyword):
         for item in new_items_filtered:
             writer.writerow(item)
 
-    print(f"数据爬取完成并追加到 {csv_file}")
-
 
 # 爬取数据
-def crawl_data(keyword, pages):
+def crawl_data(keyword, pages, file_path):
     items_data = []
     original_data = data['data']
 
@@ -193,5 +188,5 @@ def crawl_data(keyword, pages):
             }
             items_data.append(item)
 
-    append_unique_data_to_csv(items_data, keyword)
-    print(f"数据爬取完成并保存为 {keyword}_items.csv")
+    append_unique_data_to_csv(items_data, file_path)
+    print(f"数据爬取完成")
