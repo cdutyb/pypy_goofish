@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品爬取展示</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>商品爬取展示</h1>
+
+        <!-- 商品名称输入框 -->
+        <div class="form-group">
+            <label for="keyword">商品名称:</label>
+            <input type="text" id="keyword" placeholder="请输入商品名称" required>
+        </div>
+
+        <!-- 页数输入框 -->
+        <div class="form-group">
+            <label for="pages">页数:</label>
+            <input type="number" id="pages" placeholder="请输入要爬取的页数" required>
+        </div>
+
+        <button id="crawlBtn">开始爬取</button>
+
+        <!-- 控制台输出 -->
+        <div id="console-output">
+            <h3>控制台输出：</h3>
+            <pre id="progress"></pre>
+        </div>
+
+        <!-- 商品展示表格 -->
+        <div id="results">
+            <table>
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>商品名称</th>
+                        <th>价格</th>
+                        <th>商品链接</th>
+                        <th>卖家地址</th>
+                        <th>卖家ID</th>
+                        <th>商品标签</th>
+                        <th>想要人数</th>
+                        <th>图片链接</th>
+                        <th>是否包邮</th>
+                        <th>评价数</th>
+                        <th>好评率</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    <!-- 商品数据动态加载 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        <div id="pagination">
+            <button id="prevPageBtn">上一页</button>
+            <button id="nextPageBtn">下一页</button>
+            <select id="pageSelect"></select>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

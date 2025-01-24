@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+
 # 定义数据清洗函数
 def clean_data(file_path, output_dir):
     item_name = file_path.split('\\')[-1].split('_')[0]  # 从文件路径提取文件名

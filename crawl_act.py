@@ -122,7 +122,7 @@ def crawl_data(keyword, pages):
 
     for page in range(1, pages + 1):  # 循环页数，获取每一页的数据
         time.sleep(1)
-        data['data'] = original_data.replace('无人机',keyword).replace('0', str(page), 1)  # 根据用户输入替换关键词和页数
+        data['data'] = original_data.replace('无人机', keyword).replace('0', str(page), 1)  # 根据用户输入替换关键词和页数
         j = round(time.time() * 1000)
         h = params['appKey']
         key = cookies['_m_h5_tk'].split("_")[0] + "&" + str(j) + "&" + h + "&" + data['data']
