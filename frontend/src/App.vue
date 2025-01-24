@@ -85,7 +85,7 @@ export default {
 
       try {
         // 调用后端 API 获取爬取数据
-        const response = await axios.post("http://localhost:8000/crawl_and_process", {
+        const response = await axios.post("http://127.0.0.1:8000/crawl_and_process", {
           keyword: this.productName,
           pages: this.pageCount,
         },

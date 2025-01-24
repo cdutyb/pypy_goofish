@@ -1,6 +1,6 @@
 import os
 
-from backend.core import data_process, data_crawl
+from backend.app.core import data_process, data_crawl
 
 def workflow(keyword: str, pages: int, file_path: str):
     data_dir = os.path.join("..", "data")
