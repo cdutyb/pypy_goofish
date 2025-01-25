@@ -10,7 +10,8 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5000", "http://localhost:5001", "http://127.0.0.1:5000", "http://127.0.0.1:5001"],  # 前端的地址，允许凭证时 allow_origins 不能设定为 ['*']，必须指定源
+    allow_origins=["http://localhost:5000", "http://localhost:5001",
+                   "http://127.0.0.1:5000", "http://127.0.0.1:5001"],  # 前端的地址，允许凭证时 allow_origins 不能设定为 ['*']，必须指定源
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

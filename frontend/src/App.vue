@@ -62,10 +62,23 @@
             <td>{{ product['是否包邮'] }}</td>
             <td>{{ product['评价数'] }}</td>
             <td>{{ product['好评率'] }}</td>
-            <td>{{ product['综合评分'] }}</td>
+            <td>{{ formatRating(product['综合评分']) }}</td> <!-- 这里格式化评分 -->
           </tr>
         </tbody>
       </table>
+
+      <!-- 分页控制 -->
+      <div class="pagination">
+        <button @click="changePage(page - 1)" :disabled="page <= 1">上一页</button>
+
+        <!-- 页码选择器 -->
+        <select v-model="page" @change="loadPageData(page)">
+          <option v-for="n in totalPages" :key="n" :value="n">{{ n }}</option>
+        </select>
+
+        <span>当前页: {{ page }} / {{ totalPages }}</span>
+        <button @click="changePage(page + 1)" :disabled="page >= totalPages">下一页</button>
+      </div>
     </div>
   </div>
 </template>
@@ -77,9 +90,13 @@ export default {
   name: "App",
   data() {
     return {
-      productName: "", // 商品名称
-      pageCount: 1,    // 爬取页数
-      products: [],    // 存储爬取结果
+      productName: "",  // 商品名称
+      pageCount: 1,     // 爬取页数
+      page: 1,          // 当前页
+      pageSize: 30,     // 每页商品数量
+      products: [],     // 存储爬取结果
+      totalPages: 0,    // 总页数
+      totalItems: 0,    // 总商品数
     };
   },
   methods: {
@@ -90,24 +107,46 @@ export default {
       }
 
       try {
-        // 调用后端 API 获取爬取数据
         const response = await axios.post("http://localhost:8000/cp", {
           keyword: this.productName,
           pages: this.pageCount,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-        );
+        });
 
-        // 更新表格数据
-        this.products = response.data || [];
+        // 设置分页数据
+        this.totalPages = response.data.totalPages;
+        this.totalItems = response.data.totalItems;
+
+        // 加载第一页数据
+        this.page = 1;
+        this.loadPageData(this.page);
       } catch (error) {
         console.error("爬取失败:", error);
         alert("爬取失败，请检查后端服务或输入内容！");
       }
+    },
+
+    // 加载指定页的数据
+    async loadPageData(page) {
+      try {
+        const response = await axios.get(`http://localhost:8000/page?page=${page}`);
+        this.products = response.data.data || [];
+      } catch (error) {
+        console.error("加载分页数据失败:", error);
+        alert("加载分页数据失败，请重试！");
+      }
+    },
+
+    // 切换页面
+    changePage(newPage) {
+      if (newPage > 0 && newPage <= this.totalPages) {
+        this.page = newPage;
+        this.loadPageData(this.page);
+      }
+    },
+
+    // 格式化评分，保留两位小数
+    formatRating(rating) {
+      return parseFloat(rating).toFixed(2);  // 确保保留两位小数
     },
   },
 };
@@ -168,5 +207,24 @@ table th, table td {
 
 table th {
   background-color: #f2f2f2;
+}
+
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  margin: 0 5px;
+}
+
+.pagination select {
+  padding: 5px;
+  margin: 0 5px;
+}
+
+.pagination span {
+  margin: 0 10px;
 }
 </style>
