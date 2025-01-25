@@ -3,7 +3,8 @@
 ```
 cd backend
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+cd ../
+uvicorn backend.app.main:app --reload
 ```
 后端启动完成，打开msedgedriver.exe
 # 前端(localhost:5000)
