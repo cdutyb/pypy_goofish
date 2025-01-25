@@ -102,8 +102,11 @@ def crawl_data(keyword, pages, file_path):
     items_data = []
     original_data = data['data']
 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    driver_path = os.path.join(current_dir, 'edgedriver_win64', 'msedgedriver.exe')
+    
     # 设置 Edge 浏览器驱动路径
-    service = Service('edgedriver_win64/msedgedriver.exe')
+    service = Service(driver_path)
     driver = webdriver.Edge(service=service)
     driver.get('https://www.goofish.com/')
     time.sleep(2)
