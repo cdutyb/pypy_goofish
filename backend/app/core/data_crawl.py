@@ -54,6 +54,8 @@ data = {
     'data': '{"pageNumber":0,"keyword":"无人机","fromFilter":false,"rowsPerPage":30,"sortValue":"","sortField":"","customDistance":"","gps":"","propValueStr":{"searchFilter":""},"customGps":"","searchReqFromPage":"pcSearch","extraFilterValue":"{}","userPositionJson":"{}"}',
 }
 
+original_data = data['data']
+
 pattern = re.compile(r'(\d+)人想要')
 
 
@@ -100,7 +102,6 @@ def append_unique_data_to_csv(new_items, file_path):
 # 爬取数据
 def crawl_data(keyword, pages, file_path):
     items_data = []
-    original_data = data['data']
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     driver_path = os.path.join(current_dir, 'edgedriver_win64', 'msedgedriver.exe')
@@ -120,7 +121,7 @@ def crawl_data(keyword, pages, file_path):
 
     for page in range(1, pages + 1):  # 循环页数，获取每一页的数据
         time.sleep(1)
-        data['data'] = original_data.replace('无人机',keyword).replace('0', str(page), 1)  # 根据用户输入替换关键词和页数
+        data['data'] = original_data.replace('无人机', keyword).replace('0', str(page), 1)  # 根据用户输入替换关键词和页数
         j = round(time.time() * 1000)
         h = params['appKey']
         key = cookies['_m_h5_tk'].split("_")[0] + "&" + str(j) + "&" + h + "&" + data['data']

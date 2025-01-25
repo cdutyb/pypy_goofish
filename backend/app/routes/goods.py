@@ -2,10 +2,11 @@ import csv
 import os
 
 from fastapi import APIRouter, HTTPException
-from typing import List, Dict
+from typing import List, Dict, Any
 from pydantic import BaseModel
 
 router = APIRouter()
+
 
 class CrawlRequest(BaseModel):
     keyword: str
@@ -23,7 +24,7 @@ def extract_fields_from_csv(csv_file: str) -> List[Dict[str, str]]:
             for idx, row in enumerate(reader, start=1):
                 # 验证所需字段是否存在
                 required_fields = ['商品名称', '价格', '商品链接', '卖家地址', '卖家ID',
-                                 '商品标签', '想要人数', '图片链接', '是否包邮', '评价数', '好评率']
+                                 '商品标签', '想要人数', '图片链接', '是否包邮', '评价数', '好评率', '综合评分']
                 if all(field in row for field in required_fields):
                     extracted_data.append({
                         "序号": str(idx),  # 转换为字符串
@@ -37,13 +38,16 @@ def extract_fields_from_csv(csv_file: str) -> List[Dict[str, str]]:
                         "图片链接": str(row['图片链接']),
                         "是否包邮": str(row['是否包邮']),
                         "评价数": str(row['评价数']),
-                        "好评率": str(row['好评率'])
+                        "好评率": str(row['好评率']),
+                        "综合评分": str(row['综合评分'])
                     })
                 else:
                     print(f"警告: 第{idx}行缺少必要字段")
 
         print(f"成功读取{len(extracted_data)}条数据")
+
         return extracted_data
+
 
     except Exception as e:
         print(f"处理CSV文件时出错: {str(e)}")

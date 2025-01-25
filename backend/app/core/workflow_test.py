@@ -1,4 +1,5 @@
 import os
+import sys
 
 import workflow
 
@@ -7,3 +8,4 @@ import workflow
 # current_dir = os.path.dirname(os.path.abspath(__file__))
 # driver_path = os.path.join(current_dir, 'edgedriver_win64', 'msedgedriver.exe')
 # print(driver_path)
+# print(sys.path)

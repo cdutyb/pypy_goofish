@@ -41,6 +41,7 @@
             <th>是否包邮</th>
             <th>评价数</th>
             <th>好评率</th>
+            <th>综合评分</th>
           </tr>
         </thead>
         <tbody>
@@ -53,10 +54,15 @@
             <td>{{ product['卖家ID'] }}</td>
             <td>{{ product['商品标签'] }}</td>
             <td>{{ product['想要人数'] }}</td>
-            <td><img :src="product['图片链接']" alt="商品图片" width="100" /></td>
+            <td>
+              <a :href="product['图片链接']" target="_blank">
+                <img :src="product['图片链接']" alt="商品图片" width="100" />
+              </a>
+            </td>
             <td>{{ product['是否包邮'] }}</td>
             <td>{{ product['评价数'] }}</td>
             <td>{{ product['好评率'] }}</td>
+            <td>{{ product['综合评分'] }}</td>
           </tr>
         </tbody>
       </table>
