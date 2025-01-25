@@ -7,7 +7,7 @@ pip install -r requirements.txt
 cd ../
 uvicorn backend.app.main:app --reload # 如果在其他位置启动会导致检测不到backend模块
 ```
-后端启动完成，打开msedgedriver.exe
+后端启动完成
 ## 前端(localhost:5000)
 （如果5000端口被占用会递增至5001端口）\
 1、在网上安装Node.js\
