@@ -35,14 +35,14 @@ def extract_fields_from_csv(csv_file: str) -> List[Dict[str, str]]:
     return extracted_data
 
 
-@router.post("/crawl_and_process", response_model=List[Dict[str, str]])
+@router.post("/cp", response_model=List[Dict[str, str]])
 async def crawl_and_process(req: CrawlRequest):
     from backend.app.core.workflow import workflow
 
     keyword = req.keyword
     pages = req.pages
 
-    data_dir = os.path.join("../..", "data")
+    data_dir = os.path.join("..", "data")
     if not os.path.exists(data_dir):
         os.makedirs(data_dir, exist_ok=True)
         print(f"目录 {data_dir} 创建成功!")
@@ -61,3 +61,7 @@ async def crawl_and_process(req: CrawlRequest):
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading the CSV file: {str(e)}")
+
+@router.get("/cp")
+async def crawl_and_process_get():
+    return {"message": "Use POST method to crawl and process data."}
