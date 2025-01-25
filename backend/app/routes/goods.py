@@ -13,26 +13,43 @@ class CrawlRequest(BaseModel):
 
 # 提取 CSV 文件的需要字段
 def extract_fields_from_csv(csv_file: str) -> List[Dict[str, str]]:
-    extracted_data = []
-    with open(csv_file, mode="r", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        for idx, row in enumerate(reader, start=1):  # 使用 enumerate 添加序号，从 1 开始
-            # 从每一行提取需要的字段，并添加序号
-            extracted_data.append({
-                "序号": idx,
-                "商品名称": row["商品名称"],
-                "价格": row["价格"],
-                "商品链接": row["商品链接"],
-                "卖家地址": row["卖家地址"],
-                "卖家ID": row["卖家ID"],
-                "商品标签": row["商品标签"],
-                "想要人数": row["想要人数"],
-                "图片链接": row["图片链接"],
-                "是否包邮": row["是否包邮"],
-                "评价数": row["评价数"],
-                "好评率": row["好评率"]
-            })
-    return extracted_data
+    try:
+        print(f"开始读取CSV文件: {csv_file}")
+        extracted_data = []
+
+        with open(csv_file, mode="r", encoding="utf-8-sig") as file:
+            reader = csv.DictReader(file)  # DictReader自动使用第一行作为字段名
+
+            for idx, row in enumerate(reader, start=1):
+                # 验证所需字段是否存在
+                required_fields = ['商品名称', '价格', '商品链接', '卖家地址', '卖家ID',
+                                 '商品标签', '想要人数', '图片链接', '是否包邮', '评价数', '好评率']
+                if all(field in row for field in required_fields):
+                    extracted_data.append({
+                        "序号": str(idx),  # 转换为字符串
+                        "商品名称": str(row['商品名称']),
+                        "价格": str(row['价格']),
+                        "商品链接": str(row['商品链接']),
+                        "卖家地址": str(row['卖家地址']),
+                        "卖家ID": str(row['卖家ID']),
+                        "商品标签": str(row['商品标签']),
+                        "想要人数": str(row['想要人数']),
+                        "图片链接": str(row['图片链接']),
+                        "是否包邮": str(row['是否包邮']),
+                        "评价数": str(row['评价数']),
+                        "好评率": str(row['好评率'])
+                    })
+                else:
+                    print(f"警告: 第{idx}行缺少必要字段")
+
+        print(f"成功读取{len(extracted_data)}条数据")
+        return extracted_data
+
+    except Exception as e:
+        print(f"处理CSV文件时出错: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"CSV处理失败: {str(e)}")
 
 
 @router.post("/cp", response_model=List[Dict[str, str]])
@@ -42,16 +59,11 @@ async def crawl_and_process(req: CrawlRequest):
     keyword = req.keyword
     pages = req.pages
 
-    data_dir = os.path.join("..", "data")
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = os.path.join(base_dir, "data")
     if not os.path.exists(data_dir):
         os.makedirs(data_dir, exist_ok=True)
         print(f"目录 {data_dir} 创建成功!")
-    else:
-        # 如果路径已存在，但不是目录（是文件），则报错
-        if not os.path.isdir(data_dir):
-            print(f"错误：{data_dir} 已存在且是文件，不能创建目录!")
-        else:
-            print(f"目录 {data_dir} 已存在!")
 
     file_path = os.path.join(data_dir, f"{keyword}_items.csv")
     workflow(keyword, pages, file_path)  # workflow 函数生成文件，并保存到指定路径
