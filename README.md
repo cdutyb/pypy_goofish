@@ -2,9 +2,7 @@
 ## 后端(localhost:8000)
 在终端（根目录）输入命令
 ```
-cd backend
-pip install -r requirements.txt
-cd ../
+pip install -r backend/requirements.txt
 uvicorn backend.app.main:app --reload # 如果在其他位置启动会导致检测不到backend模块
 ```
 后端启动完成
