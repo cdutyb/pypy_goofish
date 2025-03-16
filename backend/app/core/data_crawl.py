@@ -29,8 +29,8 @@ headers = {
     'cache-control': 'no-cache',
     'origin': 'https://www.goofish.com',
     'referer': 'https://www.goofish.com/',
-    'sec-ch-ua': '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0',
+    'sec-ch-ua': '"Microsoft Edge";v="134", "Chromium";v="134", "Not_A Brand";v="24"',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0',
 }
 
 params = {
@@ -105,7 +105,7 @@ def crawl_data(keyword, pages, file_path):
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     driver_path = os.path.join(current_dir, 'edgedriver_win64', 'msedgedriver.exe')
-    
+
     # 设置 Edge 浏览器驱动路径
     service = Service(driver_path)
     driver = webdriver.Edge(service=service)
@@ -129,7 +129,8 @@ def crawl_data(keyword, pages, file_path):
         params['sign'] = sign
         params['t'] = str(j)
 
-        response = requests.post('https://h5api.m.goofish.com/h5/mtop.taobao.idlemtopsearch.pc.search/1.0/', params=params, cookies=cookies, headers=headers, data=data)
+        response = requests.post('https://h5api.m.goofish.com/h5/mtop.taobao.idlemtopsearch.pc.search/1.0/',
+                                 params=params, cookies=cookies, headers=headers, data=data)
         # print(response.status_code)
         resultList = response.json()['data']['resultList']  # 获取结果列表
         # 打印商品数量
