@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import goods
+from routes import goods, zhipuai
 
 app = FastAPI()
 
@@ -20,7 +20,9 @@ app.add_middleware(
     expose_headers=["*"]
 )
 
-app.include_router(goods.router, prefix="")
+app.include_router(goods.router)
+app.include_router(zhipuai.router)
+
 
 @app.get("/")
 async def root():

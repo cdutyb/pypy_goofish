@@ -20,64 +20,75 @@
         placeholder="请输入页数"
       />
 
-      <button @click="startScraping">开始</button>
+      <button @click="startScraping" :disabled="isLoading">
+        {{ isLoading ? '爬取中...' : '开始' }}
+      </button>
     </div>
 
-    <!-- 表格展示区域 -->
-    <div v-if="products.length > 0" class="table-section">
-      <h2>爬取结果</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>序号</th>
-            <th>商品名称</th>
-            <th>价格</th>
-            <th>商品链接</th>
-            <th>卖家地址</th>
-            <th>卖家ID</th>
-            <th>商品标签</th>
-            <th>想要人数</th>
-            <th>图片链接</th>
-            <th>是否包邮</th>
-            <th>评价数</th>
-            <th>好评率</th>
-            <th>综合评分</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(product, index) in products" :key="index">
-            <td>{{ product['序号'] }}</td>
-            <td>{{ product['商品名称'] }}</td>
-            <td>{{ product['价格'] }}</td>
-            <td><a :href="product['商品链接']" target="_blank">链接</a></td>
-            <td>{{ product['卖家地址'] }}</td>
-            <td>{{ product['卖家ID'] }}</td>
-            <td>{{ product['商品标签'] }}</td>
-            <td>{{ product['想要人数'] }}</td>
-            <td>
-              <a :href="product['图片链接']" target="_blank">
-                <img :src="product['图片链接']" alt="商品图片" width="100" />
-              </a>
-            </td>
-            <td>{{ product['是否包邮'] }}</td>
-            <td>{{ product['评价数'] }}</td>
-            <td>{{ product['好评率'] }}</td>
-            <td>{{ formatRating(product['综合评分']) }}</td> <!-- 这里格式化评分 -->
-          </tr>
-        </tbody>
-      </table>
+    <!-- 主内容区域 -->
+    <div class="content-container" v-if="products.length > 0">
+      <!-- AI过滤面板 -->
+      <ai-filter-panel
+        @update-products="updateDisplayedProducts"
+        :raw-products="products"
+      ></ai-filter-panel>
 
-      <!-- 分页控制 -->
-      <div class="pagination">
-        <button @click="changePage(page - 1)" :disabled="page <= 1">上一页</button>
+      <!-- 表格展示区域 -->
+      <div class="table-section">
+        <h2>展示结果 ({{ displayedProducts.length }}件商品)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>商品名称</th>
+              <th>价格</th>
+              <th>商品链接</th>
+              <th>卖家地址</th>
+              <th>卖家ID</th>
+              <th>商品标签</th>
+              <th>想要人数</th>
+              <th>图片链接</th>
+              <th>是否包邮</th>
+              <th>评价数</th>
+              <th>好评率</th>
+              <th>综合评分</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(product, index) in displayedProducts" :key="index">
+              <td>{{ product['序号'] }}</td>
+              <td>{{ product['商品名称'] }}</td>
+              <td>{{ product['价格'] }}</td>
+              <td><a :href="product['商品链接']" target="_blank">链接</a></td>
+              <td>{{ product['卖家地址'] }}</td>
+              <td>{{ product['卖家ID'] }}</td>
+              <td>{{ product['商品标签'] }}</td>
+              <td>{{ product['想要人数'] }}</td>
+              <td>
+                <a :href="product['图片链接']" target="_blank">
+                  <img :src="product['图片链接']" alt="商品图片" width="100" />
+                </a>
+              </td>
+              <td>{{ product['是否包邮'] }}</td>
+              <td>{{ product['评价数'] }}</td>
+              <td>{{ product['好评率'] }}</td>
+              <td>{{ formatRating(product['综合评分']) }}</td>
+            </tr>
+          </tbody>
+        </table>
 
-        <!-- 页码选择器 -->
-        <select v-model="page" @change="loadPageData(page)">
-          <option v-for="n in totalPages" :key="n" :value="n">{{ n }}</option>
-        </select>
+        <!-- 分页控制 -->
+        <div class="pagination">
+          <button @click="changePage(page - 1)" :disabled="page <= 1">上一页</button>
 
-        <span>当前页: {{ page }} / {{ totalPages }}</span>
-        <button @click="changePage(page + 1)" :disabled="page >= totalPages">下一页</button>
+          <!-- 页码选择器 -->
+          <select v-model="page" @change="loadPageData(page)">
+            <option v-for="n in totalPages" :key="n" :value="n">{{ n }}</option>
+          </select>
+
+          <span>当前页: {{ page }} / {{ totalPages }}</span>
+          <button @click="changePage(page + 1)" :disabled="page >= totalPages">下一页</button>
+        </div>
       </div>
     </div>
   </div>
@@ -85,18 +96,24 @@
 
 <script>
 import axios from "axios";
+import AiFilterPanel from "./components/AiFilterPanel.vue";
 
 export default {
   name: "App",
+  components: {
+    AiFilterPanel
+  },
   data() {
     return {
-      productName: "",  // 商品名称
-      pageCount: 1,     // 爬取页数
-      page: 1,          // 当前页
-      pageSize: 30,     // 每页商品数量
-      products: [],     // 存储爬取结果
-      totalPages: 0,    // 总页数
-      totalItems: 0,    // 总商品数
+      productName: "",       // 商品名称
+      pageCount: 1,          // 爬取页数
+      page: 1,               // 当前页
+      pageSize: 30,          // 每页商品数量
+      products: [],          // 存储爬取结果（原始已过滤数据）
+      displayedProducts: [], // 当前展示的商品（可能经过AI筛选）
+      totalPages: 0,         // 总页数
+      totalItems: 0,         // 总商品数
+      isLoading: false       // 加载状态
     };
   },
   methods: {
@@ -106,6 +123,8 @@ export default {
         return;
       }
 
+      this.isLoading = true;
+
       try {
         const response = await axios.post("http://localhost:8000/cp", {
           keyword: this.productName,
@@ -114,26 +133,34 @@ export default {
 
         // 设置分页数据
         this.totalPages = response.data.totalPages;
-        this.totalItems = response.data.totalItems;
+        this.totalItems = response.data.totalPages * this.pageSize;
 
         // 加载第一页数据
         this.page = 1;
-        this.loadPageData(this.page);
+        await this.loadPageData(this.page);
       } catch (error) {
         console.error("爬取失败:", error);
         alert("爬取失败，请检查后端服务或输入内容！");
+      } finally {
+        this.isLoading = false;
       }
     },
 
-    // 加载指定页的数据
+    // 加载指定页的数据（后端已进行语义过滤）
     async loadPageData(page) {
       try {
         const response = await axios.get(`http://localhost:8000/page?page=${page}`);
         this.products = response.data.data || [];
+        this.displayedProducts = [...this.products]; // 初始显示全部过滤后的商品
       } catch (error) {
         console.error("加载分页数据失败:", error);
         alert("加载分页数据失败，请重试！");
       }
+    },
+
+    // 更新显示的商品数据（来自AI筛选结果）
+    updateDisplayedProducts(filteredProducts) {
+      this.displayedProducts = filteredProducts;
     },
 
     // 切换页面
@@ -146,7 +173,7 @@ export default {
 
     // 格式化评分，保留两位小数
     formatRating(rating) {
-      return parseFloat(rating).toFixed(2);  // 确保保留两位小数
+      return parseFloat(rating).toFixed(2);
     },
   },
 };
@@ -186,12 +213,23 @@ h1 {
   cursor: pointer;
 }
 
-.input-section button:hover {
+.input-section button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.input-section button:not(:disabled):hover {
   background-color: #45a049;
 }
 
-.table-section {
+.content-container {
+  display: flex;
   margin-top: 20px;
+}
+
+.table-section {
+  flex-grow: 1;
+  overflow-x: auto;
 }
 
 table {
