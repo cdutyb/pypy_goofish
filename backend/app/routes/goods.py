@@ -152,26 +152,3 @@ async def get_page_data(page: int = 1):
 @router.get("/cp")
 async def crawl_and_process_get():
     return {"message": "Use POST method to crawl and process data."}
-
-# 分页API：通过页码获取分页数据
-@router.get("/page")
-async def get_page_data(page: int = 1):
-    # 每页30条数据
-    page_size = 30
-    global filtered_data
-    total_items = len(filtered_data)
-
-    # 检查页码是否有效
-    if page < 1 or (total_items > 0 and page > (total_items // page_size + (1 if total_items % page_size > 0 else 0))):
-        raise HTTPException(status_code=400, detail="Invalid page number")
-
-    # 获取对应页的数据
-    start_index = (page - 1) * page_size
-    end_index = start_index + page_size
-    page_data = filtered_data[start_index:end_index]
-
-    return {
-        "page": page,
-        "totalPages": (total_items // page_size) + (1 if total_items % page_size > 0 else 0),
-        "data": page_data
-    }
