@@ -1,6 +1,6 @@
 # 基于FastAPI和Vue的闲鱼二手商品数据爬取与简易可视化系统
 ## 后端(localhost:8000)
-1、爬虫使用edge浏览器，在https://googlechromelabs.github.io/chrome-for-testing/ 下载对应版本的驱动或者最新稳定版，并将chromedriver.exe复制到项目的chromedriver文件夹中。\
+1、爬虫使用chrome浏览器，在https://googlechromelabs.github.io/chrome-for-testing/ 下载对应版本的驱动或者最新稳定版，并将chromedriver.exe复制到项目的chromedriver文件夹中。\
 2、在终端（根目录）输入命令
 ```
 pip install -r backend/requirements.txt
