@@ -1,6 +1,6 @@
 # 基于FastAPI和Vue的闲鱼二手商品数据爬取与简易可视化系统
 ## 后端(localhost:8000)
-1、爬虫使用edge浏览器，在https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/?ch=1&form=MA13LH#downloads下载对应版本的驱动，并将msedgedriver.exe复制到项目的edgedriver文件夹中。\
+1、爬虫使用edge浏览器，在https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/?ch=1&form=MA13LH#downloads 下载对应版本的驱动，并将msedgedriver.exe复制到项目的edgedriver文件夹中。\
 2、在终端（根目录）输入命令
 ```
 pip install -r backend/requirements.txt
