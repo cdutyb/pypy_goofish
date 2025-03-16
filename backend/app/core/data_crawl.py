@@ -6,7 +6,7 @@ import re
 import os
 import hashlib
 from selenium import webdriver
-from selenium.webdriver.edge.service import Service
+from selenium.webdriver.chrome.service import Service
 
 # 请求参数和头部
 cookies = {
@@ -29,8 +29,8 @@ headers = {
     'cache-control': 'no-cache',
     'origin': 'https://www.goofish.com',
     'referer': 'https://www.goofish.com/',
-    'sec-ch-ua': '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0',
+    'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
 }
 
 params = {
@@ -104,11 +104,11 @@ def crawl_data(keyword, pages, file_path):
     items_data = []
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    driver_path = os.path.join(current_dir, 'edgedriver_win64', 'msedgedriver.exe')
+    driver_path = os.path.join(current_dir, 'chromedriver', 'chromedriver.exe')
     
-    # 设置 Edge 浏览器驱动路径
+    # 设置 Chrome 浏览器驱动路径
     service = Service(driver_path)
-    driver = webdriver.Edge(service=service)
+    driver = webdriver.Chrome(service=service)
     driver.get('https://www.goofish.com/')
     time.sleep(2)
     cookiess = driver.get_cookies()  # 获取有效的 cookie
