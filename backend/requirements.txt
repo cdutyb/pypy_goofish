@@ -3,4 +3,5 @@ uvicorn~=0.34.0
 requests~=2.32.3
 selenium~=4.24.0
 pandas~=2.2.3
-pydantic~=2.9.2
+#pydantic~=2.9.2
+pydantic==1.10.17
