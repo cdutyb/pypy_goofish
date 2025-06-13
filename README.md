@@ -17,3 +17,5 @@ npm install
 npm run dev
 ```
 前端启动完成
+
+后记：目录可以重构一下
